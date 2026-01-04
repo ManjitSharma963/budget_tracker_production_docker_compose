@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    container_name: budget_tracker_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-expenes_tracker}
+      MYSQL_USER: ${MYSQL_USER:-appuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-apppass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - budget_tracker_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Service (Spring Boot)
+  budget_tracker_production_api:
+    build:
+      context: ./budget_tracker_production_api
+      dockerfile: Dockerfile
+    container_name: budget_tracker_api
+    environment:
+      SPRING_APPLICATION_NAME: expenses-tracker-backend
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/expenes_tracker?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-appuser}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-apppass}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - budget_tracker_network
+    restart: unless-stopped
+
+  # UI Service
+  budget_tracker_production_ui:
+    build:
+      context: ./budget_tracker_production_ui
+      dockerfile: Dockerfile
+    container_name: budget_tracker_ui
+    ports:
+      - "3000:80"
+    depends_on:
+      - budget_tracker_production_api
+    networks:
+      - budget_tracker_network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: budget_tracker_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - budget_tracker_production_ui
+      - budget_tracker_production_api
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - budget_tracker_network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  budget_tracker_network:
+    driver: bridge
+
