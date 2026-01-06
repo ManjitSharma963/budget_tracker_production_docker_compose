@@ -41,14 +41,22 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       # Force Spring Boot to always run on port 8080 inside container
       SERVER_PORT: 8080
-      # CORS Configuration
-      SPRING_CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://139.59.85.102,http://localhost:3000,http://localhost}
+      # CORS Configuration - Allow requests from the domain
+      SPRING_CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://www.trackmyexpenses.in,https://www.trackmyexpenses.in,http://trackmyexpenses.in,https://trackmyexpenses.in,http://139.59.85.102,http://localhost:3000,http://localhost}
       SPRING_CORS_ALLOWED_METHODS: GET,POST,PUT,DELETE,PATCH,OPTIONS
       SPRING_CORS_ALLOWED_HEADERS: '*'
       SPRING_CORS_ALLOW_CREDENTIALS: 'true'
+      # Disable CSRF for API endpoints (if Spring Security is enabled)
+      SPRING_SECURITY_CSRF_DISABLE: 'true'
+      # Explicitly load external configuration file
+      SPRING_CONFIG_LOCATION: file:/app/application.properties
     ports:
       # Map host port 8080 to container port 8080 (host:container)
       - "8080:8080"
+    volumes:
+      # Mount configuration file for CORS and other settings
+      # Spring Boot will automatically pick up application.properties from /app/
+      - ./budget_tracker_production_api/application.properties:/app/application.properties:ro
     depends_on:
       mysql:
         condition: service_healthy
