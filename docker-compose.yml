@@ -54,9 +54,10 @@ services:
       SPRING_SECURITY_CSRF_DISABLE: 'true'
       # Explicitly load external configuration file
       SPRING_CONFIG_LOCATION: file:/app/application.properties
-    ports:
-      # Map host port 8080 to container port 8080 (host:container)
-      - "8080:8080"
+    # Port 8080 is now exposed through Nginx (with CORS support)
+    # API is accessible internally on port 8080, but external access goes through Nginx
+    # ports:
+    #   - "8080:8080"
     volumes:
       # Mount configuration file for CORS and other settings
       # Spring Boot will automatically pick up application.properties from /app/
@@ -93,6 +94,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "8080:8080"  # Expose port 8080 on Nginx to handle direct API access with CORS
     depends_on:
       - budget_tracker_production_ui
       - budget_tracker_production_api
