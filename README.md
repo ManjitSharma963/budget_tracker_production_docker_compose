@@ -43,10 +43,24 @@ This project contains Docker configurations for a production-ready budget tracke
    ```
    Edit `.env` file with your production values.
 
-3. **Build and start all services**
+3. **Start MySQL (first time only)**
    ```bash
-   docker-compose up -d --build
+   docker-compose --profile database up -d mysql
    ```
+
+4. **Build and start application services (UI, API, Nginx)**
+   ```bash
+   # Option 1: Use helper script (Windows)
+   start-apps.bat
+   
+   # Option 2: Use helper script (Linux/Mac)
+   ./start-apps.sh
+   
+   # Option 3: Use docker-compose directly
+   docker-compose up -d --build budget_tracker_production_ui budget_tracker_production_api nginx
+   ```
+   
+   **Note:** MySQL is excluded from normal docker-compose operations to prevent accidental deletion or restart. See [MYSQL_MANAGEMENT.md](MYSQL_MANAGEMENT.md) for details.
 
 4. **View logs**
    ```bash

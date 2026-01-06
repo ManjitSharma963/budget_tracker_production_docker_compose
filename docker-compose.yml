@@ -2,7 +2,11 @@ version: '3.8'
 
 services:
   # MySQL Database Service
+  # This service is excluded from normal docker-compose operations using the 'database' profile
+  # To start MySQL separately: docker-compose --profile database up -d mysql
   mysql:
+    profiles:
+      - database
     build:
       context: ./mysql
       dockerfile: Dockerfile
@@ -57,9 +61,11 @@ services:
       # Mount configuration file for CORS and other settings
       # Spring Boot will automatically pick up application.properties from /app/
       - ./budget_tracker_production_api/application.properties:/app/application.properties:ro
-    depends_on:
-      mysql:
-        condition: service_healthy
+    # Note: depends_on is removed to allow API to start even if MySQL is not managed by this compose file
+    # Ensure MySQL container (budget_tracker_mysql) is running before starting the API
+    # depends_on:
+    #   mysql:
+    #     condition: service_healthy
     networks:
       - budget_tracker_network
     restart: unless-stopped
