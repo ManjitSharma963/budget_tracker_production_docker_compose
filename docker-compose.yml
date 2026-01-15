@@ -40,7 +40,7 @@ services:
     container_name: budget_tracker_api
     environment:
       SPRING_APPLICATION_NAME: expenses-tracker-backend
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/expenes_tracker?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/expenses_tracker?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-appuser}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-apppass}
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
