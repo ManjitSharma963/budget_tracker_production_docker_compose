@@ -6,10 +6,13 @@ RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Clone the Spring Boot API repository
+# Remove any existing files to ensure fresh clone
+RUN rm -rf /app/* /app/.[!.]* /app/..?* 2>/dev/null || true
+
+# Clone the Spring Boot API repository (fresh clone)
 RUN git clone https://github.com/ManjitSharma963/budget_tracker_production_api.git .
 
-# Build the Spring Boot application
+# Clean and build the Spring Boot application (removes old JARs)
 RUN mvn clean package -DskipTests
 
 # Production stage
@@ -20,7 +23,10 @@ RUN apk add --no-cache wget
 
 WORKDIR /app
 
-# Copy the built JAR file from builder
+# Remove any existing JAR files to ensure fresh copy
+RUN rm -f app.jar *.jar 2>/dev/null || true
+
+# Copy the built JAR file from builder (only the latest built JAR)
 COPY --from=builder /app/target/*.jar app.jar
 
 # Create non-root user

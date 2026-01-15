@@ -32,6 +32,7 @@ services:
 
   # API Service (Spring Boot)
   # Always runs on port 8080 internally and exposes on host port 8080
+  # To force a fresh build without cache: docker-compose build --no-cache budget_tracker_production_api
   budget_tracker_production_api:
     build:
       context: ./budget_tracker_production_api
@@ -101,7 +102,6 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - budget_tracker_network
     restart: unless-stopped
