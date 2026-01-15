@@ -13,7 +13,7 @@ services:
     container_name: budget_tracker_mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-expenes_tracker}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-expenses_tracker}
       MYSQL_USER: ${MYSQL_USER:-appuser}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-apppass}
     ports:

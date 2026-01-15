@@ -3,7 +3,7 @@ FROM mysql:8.0
 
 # Set environment variables
 ENV MYSQL_ROOT_PASSWORD=root123
-ENV MYSQL_DATABASE=expenes_tracker
+ENV MYSQL_DATABASE=expenses_tracker
 ENV MYSQL_USER=appuser
 ENV MYSQL_PASSWORD=apppass
 
