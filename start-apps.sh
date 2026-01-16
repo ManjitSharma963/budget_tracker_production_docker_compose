@@ -3,7 +3,7 @@
 # MySQL container should already be running separately
 
 echo "Starting application services (UI, API, Nginx)..."
-docker-compose up -d --build budget_tracker_production_ui budget_tracker_production_api nginx
+docker-compose up -d --build mysql budget_tracker_production_ui budget_tracker_production_api nginx
 
 echo ""
 echo "Services started. MySQL container should be running separately."

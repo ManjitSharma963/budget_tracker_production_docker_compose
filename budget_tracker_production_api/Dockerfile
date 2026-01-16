@@ -39,8 +39,8 @@ USER springboot
 EXPOSE 8080
 
 # Health check (using wget or curl if available)
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health 2>/dev/null || wget --no-verbose --tries=1 --spider http://localhost:8080/health 2>/dev/null || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD wget -qO- http://localhost:8080/actuator/health | grep -q UP || exit 1
 
 # Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]
