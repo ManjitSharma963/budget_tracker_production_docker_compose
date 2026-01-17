@@ -7,7 +7,7 @@ RUN apk add --no-cache git
 WORKDIR /app
 
 # Clone the React UI repository
-RUN git clone https://github.com/ManjitSharma963/budget_tracker_production_ui.git .
+RUN git clone --branch main --single-branch --depth 1 https://github.com/ManjitSharma963/budget_tracker_production_ui.git .
 
 # Install all dependencies
 RUN npm install
